@@ -1,4 +1,5 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, ipcMain } = require("electron");
+const path = require("path");
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -10,6 +11,7 @@ async function gateCreateWindowWithLicense(createWindow) {
     height: 200,
     webPreferences: {
       devTools: isDev,
+      preload: path.join(__dirname, "gate.js"),
     },
   });
 
@@ -19,7 +21,13 @@ async function gateCreateWindowWithLicense(createWindow) {
     gateWindow.webContents.openDevTools({ mode: "detach" });
   }
 
-  // TODO Create main window for valid licenses
+  ipcMain.on("GATE_SUBMIT", async (_event, { key }) => {
+    // Close the license gate window
+    gateWindow.close();
+
+    // Launch our main window
+    createWindow();
+  });
 }
 
 function createWindow() {

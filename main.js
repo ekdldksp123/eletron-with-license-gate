@@ -1,8 +1,9 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
-
+const { autoUpdater } = require("electron-updater");
 const fetch = require("node-fetch");
 const isDev = process.env.NODE_ENV === "development";
+const licenseKey = require("nodejs-license-key");
 
 async function validateLicenseKey(key) {
   const validation = await fetch(
@@ -44,6 +45,28 @@ async function gateCreateWindowWithLicense(createWindow) {
     gateWindow.webContents.openDevTools({ mode: "detach" });
   }
 
+  const userInfo = {
+    company: "www.pace.com",
+    street: "Taipei 101",
+    city: "Taipei",
+    state: "Taiwan",
+    zip: "100",
+  };
+
+  const userLicense = {
+    info: userInfo,
+    prodCode: "License Test",
+    appVersion: "1.0.0",
+    osType: "IOS",
+  };
+
+  try {
+    const license = licenseKey.createLicense(userLicense);
+    console.log(license);
+  } catch (error) {
+    console.log(error);
+  }
+
   ipcMain.on("GATE_SUBMIT", async (_event, { key }) => {
     const code = await validateLicenseKey(key);
     console.log(code);
@@ -53,7 +76,7 @@ async function gateCreateWindowWithLicense(createWindow) {
         // Close the license gate window
         gateWindow.close();
         // Create our main window
-        createWindow();
+        createWindow(key);
         break;
       default:
         // Exit the application
@@ -63,7 +86,7 @@ async function gateCreateWindowWithLicense(createWindow) {
   });
 }
 
-function createWindow() {
+function createWindow(key) {
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
@@ -73,6 +96,11 @@ function createWindow() {
   });
 
   mainWindow.loadFile("index.html");
+
+  if (!isDev) {
+    autoUpdater.addAuthHeader(`License ${key}`);
+    autoUpdater.checkForUpdatesAndNotify();
+  }
 }
 
 app.whenReady().then(() => gateCreateWindowWithLicense(createWindow));

@@ -1,8 +1,20 @@
 {
   "private": true,
+  "name": "electron-with-licensing",
+  "version": "1.0.0",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "postinstall": "electron-builder install-app-deps",
+    "start": "electron .",
+    "dist": "electron-builder build --publish always"
+  },
+  "build": {
+    "publish": {
+      "provider": "keygen",
+      "account": "1fddcec8-8dd3-4d8d-9b16-215cac0f9b52",
+      "product": "858e0235-3237-46e4-a86c-ef01ae0b2c21",
+      "channel": "stable"
+    }
   },
   "devDependencies": {
     "electron": "^23.0.0",
@@ -10,6 +22,7 @@
   },
   "dependencies": {
     "electron-updater": "^6.0.0-alpha.8",
-    "node-fetch": "2"
+    "node-fetch": "2",
+    "nodejs-license-key": "^1.0.1"
   }
 }

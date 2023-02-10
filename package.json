@@ -5,9 +5,11 @@
     "start": "electron ."
   },
   "devDependencies": {
-    "electron": "^23.0.0"
+    "electron": "^23.0.0",
+    "electron-builder": "^24.0.0-alpha.11"
   },
   "dependencies": {
+    "electron-updater": "^6.0.0-alpha.8",
     "node-fetch": "2"
   }
 }

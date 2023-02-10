@@ -1,7 +1,30 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 
+const fetch = require("node-fetch");
 const isDev = process.env.NODE_ENV === "development";
+
+async function validateLicenseKey(key) {
+  const validation = await fetch(
+    `https://api.keygen.sh/v1/accounts/demo/licenses/actions/validate-key`,
+    {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        accept: "application/json",
+      },
+      body: JSON.stringify({
+        meta: { key },
+      }),
+    }
+  );
+  const { meta, errors } = await validation.json();
+  if (errors) {
+    return null;
+  }
+
+  return meta.code;
+}
 
 async function gateCreateWindowWithLicense(createWindow) {
   const gateWindow = new BrowserWindow({
@@ -22,11 +45,21 @@ async function gateCreateWindowWithLicense(createWindow) {
   }
 
   ipcMain.on("GATE_SUBMIT", async (_event, { key }) => {
-    // Close the license gate window
-    gateWindow.close();
+    const code = await validateLicenseKey(key);
+    console.log(code);
 
-    // Launch our main window
-    createWindow();
+    switch (code) {
+      case "VALID":
+        // Close the license gate window
+        gateWindow.close();
+        // Create our main window
+        createWindow();
+        break;
+      default:
+        // Exit the application
+        app.exit(1);
+        break;
+    }
   });
 }
 

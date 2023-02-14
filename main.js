@@ -5,26 +5,12 @@ const fetch = require("node-fetch");
 const isDev = process.env.NODE_ENV === "development";
 const licenseKey = require("nodejs-license-key");
 
-async function validateLicenseKey(key) {
-  const validation = await fetch(
-    `https://api.keygen.sh/v1/accounts/demo/licenses/actions/validate-key`,
-    {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        accept: "application/json",
-      },
-      body: JSON.stringify({
-        meta: { key },
-      }),
-    }
-  );
-  const { meta, errors } = await validation.json();
-  if (errors) {
-    return null;
+function validateLicenseKey(key) {
+  const licenseKey = process.env.LICENSE_KEY;
+  if (key === licenseKey) {
+    return "VALID";
   }
-
-  return meta.code;
+  return "INVALID";
 }
 
 async function gateCreateWindowWithLicense(createWindow) {
@@ -61,14 +47,15 @@ async function gateCreateWindowWithLicense(createWindow) {
   };
 
   try {
-    const license = licenseKey.createLicense(userLicense);
-    console.log(license);
+    const createdLicense = licenseKey.createLicense(userLicense);
+    process.env.LICENSE_KEY = createdLicense.license;
+    console.log(process.env.LICENSE_KEY);
   } catch (error) {
     console.log(error);
   }
 
   ipcMain.on("GATE_SUBMIT", async (_event, { key }) => {
-    const code = await validateLicenseKey(key);
+    const code = validateLicenseKey(key);
     console.log(code);
 
     switch (code) {

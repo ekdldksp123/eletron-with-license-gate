@@ -1,19 +1,15 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 const { autoUpdater } = require("electron-updater");
-const fetch = require("node-fetch");
 const isDev = process.env.NODE_ENV === "development";
-const licenseKey = require("nodejs-license-key");
+// const licenseKey = require("nodejs-license-key");
 const mac = require("macaddress");
-const dotenv = require("dotenv");
-
-dotenv.config();
 
 function validateLicenseKey(key, mac) {
   const licenseKey = process.env.LICENSE_KEY;
-  const macAddress = process.env.MAC_ADDRESS;
+  const macAddress = process.env.MAC_ADDRESS.split(",");
 
-  if (key === licenseKey && mac === macAddress) {
+  if (key === licenseKey && macAddress.includes(mac)) {
     return "VALID";
   } else {
     console.log(key, mac);
@@ -25,7 +21,6 @@ function validateLicenseKey(key, mac) {
 async function gateCreateWindowWithLicense(createWindow) {
   const certification = process.env.IS_VALID;
 
-  console.log("certification : ", certification);
   if (certification === "valid") createWindow(process.env.LICENSE_KEY);
   else {
     const gateWindow = new BrowserWindow({

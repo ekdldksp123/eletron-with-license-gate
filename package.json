@@ -6,8 +6,9 @@
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
     "start": "electron .",
-    "build:win": "electron-builder build --win",
-    "build:mac": "electron-builder build --mac"
+    "dev": "cross-env IS_VALID=invalid TEMP_LICENSE_KEY=53VS1-7D104-V4WH2-627D7-07A12-5BA30 TEMP_MAC_ADDRESS=bc:d0:74:1c:92:e6,3c:a6:f6:0e:d0:4e electron .",
+    "build:win": "cross-env IS_VALID=invalid TEMP_LICENSE_KEY=53VS1-7D104-V4WH2-627D7-07A12-5BA30 TEMP_MAC_ADDRESS=bc:d0:74:1c:92:e6,3c:a6:f6:0e:d0:4e electron-builder build --win",
+    "build:mac": "cross-env IS_VALID=invalid TEMP_LICENSE_KEY=53VS1-7D104-V4WH2-627D7-07A12-5BA30 TEMP_MAC_ADDRESS=bc:d0:74:1c:92:e6,3c:a6:f6:0e:d0:4e electron-builder build --mac"
   },
   "build": {
     "appId": "test",
@@ -41,6 +42,7 @@
     "electron-builder": "^24.0.0-alpha.11"
   },
   "dependencies": {
+    "cross-env": "^7.0.3",
     "dotenv": "^16.0.3",
     "electron-updater": "^6.0.0-alpha.8",
     "macaddress": "^0.5.3",

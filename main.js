@@ -4,6 +4,9 @@ const { autoUpdater } = require("electron-updater");
 const isDev = process.env.NODE_ENV === "development";
 // const licenseKey = require("nodejs-license-key");
 const mac = require("macaddress");
+const storage = require("electron-json-storage");
+
+storage.clear();
 
 function validateLicenseKey(key, mac) {
   const licenseKey = process.env.LICENSE_KEY;
@@ -19,9 +22,9 @@ function validateLicenseKey(key, mac) {
 }
 
 async function gateCreateWindowWithLicense(createWindow) {
-  const certification = process.env.IS_VALID;
+  const certification = storage.getSync("certification");
 
-  if (certification === "valid") createWindow(process.env.LICENSE_KEY);
+  if (certification?.isValid) createWindow(process.env.LICENSE_KEY);
   else {
     const gateWindow = new BrowserWindow({
       resizable: false,
@@ -60,6 +63,9 @@ async function gateCreateWindowWithLicense(createWindow) {
     try {
       macaddress = await mac.one().then((mac) => mac);
 
+      process.env.TEMP_LICENSE_KEY = "53VS1-7D104-V4WH2-627D7-07A12-5BA30";
+      process.env.TEMP_MAC_ADDRESS = "bc:d0:74:1c:92:e6,3c:a6:f6:0e:d0:4e";
+
       // const createdLicense = licenseKey.createLicense(userLicense);
       process.env.LICENSE_KEY = process.env.TEMP_LICENSE_KEY;
       process.env.MAC_ADDRESS = process.env.TEMP_MAC_ADDRESS;
@@ -77,7 +83,7 @@ async function gateCreateWindowWithLicense(createWindow) {
         case "VALID":
           // Close the license gate window
           gateWindow.close();
-          process.env.IS_VALID = "valid";
+          storage.set("certification", { isValid: true });
           // Create our main window
           createWindow(key);
           break;

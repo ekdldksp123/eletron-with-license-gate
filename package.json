@@ -7,8 +7,8 @@
     "postinstall": "electron-builder install-app-deps",
     "start": "electron .",
     "dev": "cross-env IS_VALID=invalid TEMP_LICENSE_KEY=53VS1-7D104-V4WH2-627D7-07A12-5BA30 TEMP_MAC_ADDRESS=bc:d0:74:1c:92:e6,3c:a6:f6:0e:d0:4e electron .",
-    "build:win": "cross-env IS_VALID=invalid TEMP_LICENSE_KEY=53VS1-7D104-V4WH2-627D7-07A12-5BA30 TEMP_MAC_ADDRESS=bc:d0:74:1c:92:e6,3c:a6:f6:0e:d0:4e electron-builder build --win",
-    "build:mac": "cross-env IS_VALID=invalid TEMP_LICENSE_KEY=53VS1-7D104-V4WH2-627D7-07A12-5BA30 TEMP_MAC_ADDRESS=bc:d0:74:1c:92:e6,3c:a6:f6:0e:d0:4e electron-builder build --mac"
+    "build:win": "cross-env electron-builder build --win",
+    "build:mac": "cross-env electron-builder build --mac"
   },
   "build": {
     "appId": "test",
@@ -44,9 +44,11 @@
   "dependencies": {
     "cross-env": "^7.0.3",
     "dotenv": "^16.0.3",
+    "electron-json-storage": "^4.6.0",
     "electron-updater": "^6.0.0-alpha.8",
     "macaddress": "^0.5.3",
     "node-fetch": "2",
-    "nodejs-license-key": "^1.0.1"
+    "nodejs-license-key": "^1.0.1",
+    "sql.js": "^1.8.0"
   }
 }

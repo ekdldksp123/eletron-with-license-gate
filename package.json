@@ -43,12 +43,9 @@
   },
   "dependencies": {
     "cross-env": "^7.0.3",
-    "dotenv": "^16.0.3",
     "electron-json-storage": "^4.6.0",
     "electron-updater": "^6.0.0-alpha.8",
     "macaddress": "^0.5.3",
-    "node-fetch": "2",
-    "nodejs-license-key": "^1.0.1",
-    "sql.js": "^1.8.0"
+    "nodejs-license-key": "^1.0.1"
   }
 }

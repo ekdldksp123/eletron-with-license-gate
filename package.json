@@ -6,21 +6,42 @@
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
     "start": "electron .",
-    "dist": "electron-builder build --publish always"
+    "build:win": "electron-builder build --win",
+    "build:mac": "electron-builder build --mac"
   },
   "build": {
-    "publish": {
-      "provider": "keygen",
-      "account": "1fddcec8-8dd3-4d8d-9b16-215cac0f9b52",
-      "product": "858e0235-3237-46e4-a86c-ef01ae0b2c21",
-      "channel": "stable"
-    }
+    "appId": "test",
+    "productName": "TestApp",
+    "directories": {
+      "output": "./out/"
+    },
+    "mac": {
+      "target": {
+        "target": "dmg",
+        "arch": "universal"
+      }
+    },
+    "win": {
+      "target": {
+        "target": "nsis",
+        "arch": [
+          "x64"
+        ]
+      }
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "runAfterFinish": false
+    },
+    "buildVersion": "1"
   },
   "devDependencies": {
     "electron": "^23.0.0",
     "electron-builder": "^24.0.0-alpha.11"
   },
   "dependencies": {
+    "dotenv": "^16.0.3",
     "electron-updater": "^6.0.0-alpha.8",
     "macaddress": "^0.5.3",
     "node-fetch": "2",

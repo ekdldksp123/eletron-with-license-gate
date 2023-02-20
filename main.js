@@ -6,8 +6,6 @@ const isDev = process.env.NODE_ENV === "development";
 const mac = require("macaddress");
 const storage = require("electron-json-storage");
 
-storage.clear();
-
 function validateLicenseKey(key, mac) {
   const licenseKey = process.env.LICENSE_KEY;
   const macAddress = process.env.MAC_ADDRESS.split(",");
